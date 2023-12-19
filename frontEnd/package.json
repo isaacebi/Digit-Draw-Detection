@@ -1,5 +1,5 @@
 {
-  "name": "react-app",
+  "name": "vite-project",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,11 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "axios": "^1.6.2",
     "react": "^18.2.0",
+    "react-canvas-draw": "^1.2.1",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",
+    "@types/react-canvas-draw": "^1.2.3",
     "@types/react-dom": "^18.2.17",
     "@typescript-eslint/eslint-plugin": "^6.14.0",
     "@typescript-eslint/parser": "^6.14.0",
