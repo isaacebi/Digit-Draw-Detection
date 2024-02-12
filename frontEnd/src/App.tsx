@@ -10,11 +10,14 @@ function App() {
 
   // State to store the predicted number
   const [predictedNumber, setPredictedNumber] = useState<number[]>([0, 0]);
+  const [trainingData, setTrainingData] = useState<number[][]>([]);
+  const [trainingNumber, setTrainingNumber] = useState<number>(0);
+
 
   // Function to request prediction based on the drawn image
   const requestPrediction = async(base64: string)=>{
     // Replace with the actual prediction URL
-    const URL_HERE = "http://192.168.0.7:5000/predict";
+    const URL_HERE = "http://127.0.0.1:5000/predict";
 
     // Sending the image data to the prediction API
     const res = await axios.post(URL_HERE, {
@@ -34,6 +37,28 @@ function App() {
     }
   }
 
+
+  // Function to send training data
+  const sendTraining = async (trainNumber: number, imageURL: string) => {
+    const URL_HERE = "http://127.0.0.1:5000/train";
+
+    // Processing the imageURL
+    const base64Image = imageURL.split(",")[1]; // Extracting the image data (excluding metadata)
+    // console.log(base64Image)
+
+    const res = await axios.post(URL_HERE, {
+      image: base64Image,
+      trainNumber: trainNumber
+    })
+
+    if (res.data.success) {
+      console.log("Training data sent successfully!");
+    } else {
+      console.error("Training data not sent. Server responded with error:", res.data.error);
+    }
+  }
+
+
   // Function to clear the drawing on the canvas
   const onClear = ()=>{
     if(ref.current){
@@ -44,6 +69,7 @@ function App() {
     setPredictedNumber([0, 0]);
   };
 
+
   // Function to handle the prediction request when the "Predict" button is clicked
   const onClickSend = ()=>{
     if(ref.current){
@@ -51,10 +77,23 @@ function App() {
       const imageURL = ref.current.getDataURL("png", false, "0xffffff");
 
       // Temporary log to display the image data URL
-      console.log(imageURL);
+      // console.log(imageURL);
 
       // Sending the drawn image for prediction
       requestPrediction(imageURL);
+    }
+  };
+
+
+  // New feature
+  const addTrainingData = () => {
+    if (ref.current) {
+      const imageURL = ref.current.getDataURL("png", false, "0xffffff");
+      const newTrainingData = [...trainingData, [trainingNumber, ...predictedNumber]];
+      setTrainingData(newTrainingData);
+
+      const trainNumber = newTrainingData[newTrainingData.length - 1]
+      sendTraining(trainNumber, imageURL)
     }
   };
 
@@ -87,8 +126,20 @@ function App() {
     </div>
 
     <div>
-      Prediction number is {predictedNumber[0]} or maybe {predictedNumber[1]} if both are wrong, maybe should check the data preprocessing, modelling or ... yeah just ask a human for help
+        <p>Prediction number is {predictedNumber[0]} or maybe {predictedNumber[1]}</p>
+        <input type="number" placeholder="Enter actual number" value={trainingNumber} onChange={(e) => setTrainingNumber(parseInt(e.target.value))} />
+        <button onClick={addTrainingData}>Add Training Data</button>
     </div>
+
+    <div>
+      <h3>Training Data</h3>
+      <ul>
+        {trainingData.map((data, index) => (
+          <li key={index}>Actual: {data[0]}, Predicted: {data[1]}</li>
+        ))}
+      </ul>
+    </div>
+
   </div>
 }
 	
