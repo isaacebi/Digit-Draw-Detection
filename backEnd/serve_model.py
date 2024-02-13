@@ -1,13 +1,15 @@
 # %% Importing Libraries
 import flask
 from flask_cors import CORS
-from flask import Flask, request
+from flask import Flask, request, jsonify
 
 import io
 import os
 import torch
 import base64
+import sqlite3
 import numpy as np
+import pandas as pd
 import torch.nn as nn
 from PIL import Image
 import torchvision.transforms as transforms
@@ -17,9 +19,13 @@ from train_model import CNN
 # %% Pathing
 DIR_PATH = os.getcwd()
 MODELS_PATH = os.path.join(DIR_PATH, 'models')
+DATA_PATH = os.path.join(DIR_PATH, 'data')
 
 # Model path & name
 CNN_MODEL_PATH = os.path.join(MODELS_PATH, 'cnn_model.pth')
+
+# DB
+RLHF_DB = os.path.join(DATA_PATH, 'RLHF.db')
 
 # %%
 # Create a Flask application
@@ -40,8 +46,6 @@ CNN_MODEL.eval()
 
 # Define a route for handling predictions via POST requests
 @app.route('/predict', methods=['POST'])
-
-
 def predict():
     if request.method == "POST":
         # Extract the image data from the POST request
@@ -72,6 +76,34 @@ def predict():
         
         return response
 
+@app.route('/train', methods=['POST'])
+def train():
+    data = request.json  # Assuming JSON data is sent from the frontend
+    # Process the received data here
+    # print("Received data:", data)
+
+    # extract picture
+    image_str = request.json['image']
+    
+    # actual number - human feedback
+    act_num = request.json['trainNumber']
+
+    # Create a database connection and cursor using the 'with' statement
+    with sqlite3.connect(RLHF_DB) as conn:
+        cursor = conn.cursor()
+
+        # Create the table if it doesn't exist
+        create_sql = "CREATE TABLE IF NOT EXISTS train_digit (image TEXT, number INTEGER)"
+        cursor.execute(create_sql)
+
+        # Insert the received data into the database
+        insert_sql = "INSERT INTO train_digit (image, number) VALUES (?, ?)"
+        cursor.execute(insert_sql, (image_str, act_num))
+
+        # Commit changes
+        conn.commit()
+
+    return jsonify({"message": "Data received successfully"})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

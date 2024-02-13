@@ -48,10 +48,10 @@ function App() {
 
     const res = await axios.post(URL_HERE, {
       image: base64Image,
-      trainNumber: trainNumber
+      trainNumber: trainNumber[0]
     })
 
-    if (res.data.success) {
+    if (res.status === 200) {
       console.log("Training data sent successfully!");
     } else {
       console.error("Training data not sent. Server responded with error:", res.data.error);
