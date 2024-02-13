@@ -39,7 +39,7 @@ function App() {
 
 
   // Function to send training data
-  const sendTraining = async (trainNumber: number, imageURL: string) => {
+  const sendTraining = async (trainNumber: number[], imageURL: string) => {
     const URL_HERE = "http://127.0.0.1:5000/train";
 
     // Processing the imageURL
