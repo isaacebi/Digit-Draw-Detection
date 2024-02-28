@@ -112,8 +112,8 @@ Upon investigation, the initial preprocess or version one preprocess is not suit
 
 So now its the beginning of the year! Lets start with improving this model, right now the AI are simply producing guessing outcome. But why? Based on the coding, it might be a model drift. So lets make a check list for that:
 
-- [ ] Making sure train data and real data are the similiar
-- [ ] Need to make save data if model predict it wrong
+- [x] Making sure train data and real data are the similiar
+- [x] Need to make save data if model predict it wrong
 
 Well, this section might be edited later after doing some tweak. For now, this is all for it.
 
