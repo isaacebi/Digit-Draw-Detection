@@ -15,6 +15,7 @@ from PIL import Image
 import torchvision.transforms as transforms
 
 from train_model import CNN
+from src import preprocess
 
 # %% Pathing
 DIR_PATH = os.getcwd()
@@ -51,13 +52,8 @@ def predict():
         # Extract the image data from the POST request
         image = request.json['image']
 
-        # Decode the base64-encoded image string
-        image_string = base64.b64decode(image)
-        
-        # Open and preprocess the image
-        image = Image.open(io.BytesIO(image_string))
-        image = image.convert('1') # Convert to black and white
-        image = image.resize((28,28)) # Resize the image
+        # preprocess image
+        image = preprocess.version_two(image)
 
         # Convert the image to a PyTorch tensor and move it to the specified device
         image_torch = torch.tensor(np.float32(np.array(image))).to(device)
