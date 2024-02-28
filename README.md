@@ -103,6 +103,11 @@ Just building model using PyTorch, it take long time but yeah that how life work
 
 Literaly React. :neutral_face:
 
+## Problem Solved
+
+Upon investigation, the initial preprocess or version one preprocess is not suitable, the following can be shown below:
+
+
 ## Future Development
 
 So now its the beginning of the year! Lets start with improving this model, right now the AI are simply producing guessing outcome. But why? Based on the coding, it might be a model drift. So lets make a check list for that:
