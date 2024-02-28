@@ -106,7 +106,7 @@ Literaly React. :neutral_face:
 ## Problem Solved
 
 Upon investigation, the initial preprocess or version one preprocess is not suitable, the following can be shown below:
-
+![Preprocess Version](backEnd/res/preprocess_poc.png)
 
 ## Future Development
 
